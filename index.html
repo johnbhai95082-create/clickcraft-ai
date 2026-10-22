@@ -1,1 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <title>ClickCraft AI — AI Thumbnail & Banner Generator</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #08080d;
+      color: white;
+      min-height: 100vh;
+    }
+
+    nav {
+      height: 72px;
+      padding: 0 7%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #20202b;
+      background: rgba(8, 8, 13, 0.95);
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 800;
+    }
+
+    .logo span {
+      color: #8b5cf6;
+    }
+
+    .login {
+      padding: 10px 18px;
+      border: 1px solid #343441;
+      background: #15151d;
+      color: white;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 80px 20px 30px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 8px 15px;
+      border-radius: 30px;
+      background: #171222;
+      border: 1px solid #3b2864;
+      color: #b99cff;
+      font-size: 14px;
+      margin-bottom: 25px;
+    }
+
+    h1 {
+      font-size: clamp(42px, 7vw, 76px);
+      line-height: 1.05;
+      max-width: 950px;
+      margin: auto;
+    }
+
+    h1 span {
+      color: #8b5cf6;
+    }
+
+    .subtitle {
+      max-width: 680px;
+      margin: 25px auto;
+      color: #a4a4b0;
+      font-size: 18px;
+      line-height: 1.6;
+    }
+
+    .creator {
+      max-width: 850px;
+      margin: 40px auto;
+      padding: 25px;
+      background: #111119;
+      border: 1px solid #292936;
+      border-radius: 20px;
+      text-align: left;
+      box-shadow: 0 20px 70px rgba(0,0,0,.35);
+    }
+
+    .creator-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 140px;
+      resize: none;
+      border: 1px solid #343440;
+      border-radius: 14px;
+      background: #09090e;
+      color: white;
+      padding: 18px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    textarea:focus {
+      border-color: #8b5cf6;
+    }
+
+    .tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .tool {
+      padding: 12px 18px;
+      background: #191923;
+      color: #ddd;
+      border: 1px solid #30303c;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .tool.active {
+      background: #8b5cf6;
+      border-color: #8b5cf6;
+      color: white;
+    }
+
+    .generate {
+      width: 100%;
+      margin-top: 20px;
+      padding: 16px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(90deg, #7048e8, #9b6cff);
+      color: white;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .generate:hover {
+      transform: translateY(-1px);
+      opacity: .95;
+    }
+
+    .status {
+      display: none;
+      margin-top: 18px;
+      padding: 14px;
+      background: #171322;
+      border: 1px solid #39275d;
+      border-radius: 10px;
+      color: #c7b7ff;
+      text-align: center;
+    }
+
+    .features {
+      max-width: 1050px;
+      margin: 70px auto;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .card {
+      padding: 28px;
+      background: #111119;
+      border: 1px solid #292936;
+      border-radius: 16px;
+    }
+
+    .icon {
+      font-size: 32px;
+      margin-bottom: 15px;
+    }
+
+    .card h3 {
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      color: #92929e;
+      line-height: 1.6;
+    }
+
+    .how {
+      text-align: center;
+      padding: 60px 20px;
+      background: #0d0d14;
+      border-top: 1px solid #20202b;
+      border-bottom: 1px solid #20202b;
+    }
+
+    .how h2 {
+      font-size: 38px;
+      margin-bottom: 35px;
+    }
+
+    .steps {
+      max-width: 900px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .step {
+      padding: 20px;
+    }
+
+    .number {
+      width: 45px;
+      height: 45px;
+      margin: 0 auto 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #8b5cf6;
+      border-radius: 50%;
+      font-weight: bold;
+    }
+
+    footer {
+      padding: 40px;
+      text-align: center;
+      color: #686875;
+    }
+
+    @media(max-width: 700px) {
+      .features,
+      .steps {
+        grid-template-columns: 1fr;
+      }
+
+      nav {
+        padding: 0 5%;
+      }
+
+      .hero {
+        padding-top: 55px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav>
+    <div class="logo">
+      ClickCraft <span>AI</span>
+    </div>
+
+    <button class="login">
+      Sign In
+    </button>
+  </nav>
+
+
+  <section class="hero">
+
+    <div class="badge">
+      ✨ AI-Powered Creator Tool
+    </div>
+
+    <h1>
+      Turn Your <span>Idea</span><br>
+      Into a Click-Worthy Design
+    </h1>
+
+    <p class="subtitle">
+      Describe your video or channel idea and ClickCraft AI
+      will help you create professional thumbnails and banners.
+    </p>
+
+
+    <div class="creator">
+
+      <div class="creator-title">
+        🎯 What do you want to create?
+      </div>
+
+      <textarea id="idea"
+        placeholder="Example: A funny YouTube video where Jesus tries to catch a monkey stealing a samosa..."></textarea>
+
+
+      <div class="tools">
+
+        <button class="tool active" onclick="selectTool(this)">
+          🎬 Thumbnail
+        </button>
+
+        <button class="tool" onclick="selectTool(this)">
+          🖼️ YouTube Banner
+        </button>
+
+        <button class="tool" onclick="selectTool(this)">
+          📱 Shorts
+        </button>
+
+      </div>
+
+
+      <button class="generate" onclick="generateDesign()">
+        ✨ Generate Design
+      </button>
+
+      <div class="status" id="status">
+        🧠 ClickCraft AI is preparing your design...
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <section class="features">
+
+    <div class="card">
+      <div class="icon">🧠</div>
+      <h3>Understand Your Idea</h3>
+      <p>
+        Simply describe your video or channel idea.
+        Our AI will understand what you want to create.
+      </p>
+    </div>
+
+
+    <div class="card">
+      <div class="icon">🎨</div>
+      <h3>Professional Designs</h3>
+      <p>
+        Create attention-grabbing designs made for
+        YouTube creators and social media.
+      </p>
+    </div>
+
+
+    <div class="card">
+      <div class="icon">⚡</div>
+      <h3>Fast Creation</h3>
+      <p>
+        Generate creative design concepts quickly
+        and choose the one you like.
+      </p>
+    </div>
+
+  </section>
+
+
+  <section class="how">
+
+    <h2>How It Works</h2>
+
+    <div class="steps">
+
+      <div class="step">
+        <div class="number">1</div>
+        <h3>Describe</h3>
+        <p>Tell us your video or channel idea.</p>
+      </div>
+
+      <div class="step">
+        <div class="number">2</div>
+        <h3>Generate</h3>
+        <p>ClickCraft AI creates your design concept.</p>
+      </div>
+
+      <div class="step">
+        <div class="number">3</div>
+        <h3>Download</h3>
+        <p>Download your finished design.</p>
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <footer>
+    © 2026 ClickCraft AI — Create. Click. Grow.
+  </footer>
+
+
+  <script>
+
+    function selectTool(button) {
+
+      document.querySelectorAll(".tool").forEach(function(tool) {
+        tool.classList.remove("active");
+      });
+
+      button.classList.add("active");
+    }
+
+
+    function generateDesign() {
+
+      const idea = document.getElementById("idea").value.trim();
+      const status = document.getElementById("status");
+
+      if (idea === "") {
+        alert("Please describe your idea first.");
+        return;
+      }
+
+      status.style.display = "block";
+
+      setTimeout(function() {
+
+        status.innerHTML =
+          "✨ Your idea is ready! AI image generation will be connected in the next step.";
+
+      }, 1500);
+    }
+
+  </script>
+
+</body>
+</html>
